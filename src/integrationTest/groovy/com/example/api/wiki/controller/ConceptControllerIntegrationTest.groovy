@@ -36,7 +36,8 @@ class ConceptControllerIntegrationTest extends Specification {
 
 	def 'When get is called then the response has status 200 and content is correct'() {
 		given:
-		conceptRepository.save(entity)
+		var generatedId = conceptRepository.save(entity).getId()
+		response.setId(generatedId)
 		for (def paragraph : entity.getParagraphs()) {
 			paragraphRepository.save(paragraph)
 		}
@@ -47,7 +48,7 @@ class ConceptControllerIntegrationTest extends Specification {
 				.asyncResult == response
 		where:
 		url          | entity                                                                                                     || response
-		'/concept/1' | new ConceptEntity(1, 1, "Key Phrase", "summary", [])                                                       || new Concept(1, "Key Phrase", "summary", [])
-		'/concept/2' | new ConceptEntity(2, 1, "Test Phrase", "summary", [new ParagraphEntity(2, 1, 1, "Header", "Description")]) || new Concept(2, "Test Phrase", "summary", [new Paragraph(1, 1, "Header", "Description", [])])
+		'/concept/1' | new ConceptEntity(1, 1, "Key Phrase", "summary", [])                                                       || new Concept(0, "Key Phrase", "summary", [])
+		'/concept/2' | new ConceptEntity(2, 1, "Test Phrase", "summary", [new ParagraphEntity(2, 1, 1, "Header", "Description")]) || new Concept(0, "Test Phrase", "summary", [new Paragraph(1, 1, "Header", "Description", [])])
 	}
 }

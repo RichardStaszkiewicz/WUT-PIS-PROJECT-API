@@ -34,8 +34,7 @@ class SectionControllerIntegrationTest extends Specification {
 
 	def 'When get root sections is called should return 200 and correct response'() {
 		given:
-		repository.save(new SectionEntity(0, "test", null))
-		var generatedId = repository.findAllBySuperSectionIdIsNull().stream().findFirst().map(SectionEntity::getId).orElse(0)
+		var generatedId = repository.save(new SectionEntity(0, "test", null)).getId()
 		var expected = List.of(Section.builder().id(generatedId).name("test").build())
 		expect:
 		mvc.perform(get("/section/"))
@@ -46,8 +45,7 @@ class SectionControllerIntegrationTest extends Specification {
 
 	def 'When get sections by parent id is called should return 200 and correct response'() {
 		given:
-		repository.save(new SectionEntity(0, "test", 1))
-		var generatedId = repository.findAllBySuperSectionIdEquals(1).stream().findFirst().map(SectionEntity::getId).orElse(0)
+		var generatedId = repository.save(new SectionEntity(0, "test", 1)).getId()
 		var expected = List.of(Section.builder().id(generatedId).name("test").build())
 		expect:
 		mvc.perform(get("/section/parent/1"))
@@ -58,8 +56,7 @@ class SectionControllerIntegrationTest extends Specification {
 
 	def 'When get section by id is called should return 200 and correct response'() {
 		given:
-		repository.save(new SectionEntity(0, "test", 1))
-		var generatedId = repository.findAll().iterator().next().getId()
+		var generatedId = repository.save(new SectionEntity(0, "test", 1)).getId()
 		var expected = Section.builder().id(generatedId).name("test").build()
 		expect:
 		mvc.perform(get("/section/id/" + generatedId))
@@ -70,8 +67,7 @@ class SectionControllerIntegrationTest extends Specification {
 
 	def 'When delete section by id is called should return 200 and correct response'() {
 		given:
-		repository.save(new SectionEntity(0, "test", 1))
-		var generatedId = repository.findAll().iterator().next().getId()
+		var generatedId = repository.save(new SectionEntity(0, "test", 1)).getId()
 		expect:
 		mvc.perform(delete("/section/" + generatedId))
 				.andExpect(status().isOk())
