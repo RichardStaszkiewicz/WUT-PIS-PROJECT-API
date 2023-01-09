@@ -65,7 +65,7 @@ public class ElasticSearchQuery {
         return ("Product with id " + deleteResponse.id() + " does not exist.");
     }
 
-    public  List<Product> searchAllDocuments() throws IOException {
+    public List<Product> searchAllDocuments() throws IOException {
         SearchRequest searchRequest =  SearchRequest.of(s -> s.index(indexName));
         SearchResponse<Product> searchResponse =  elasticsearchClient.search(searchRequest, Product.class);
         List<Hit<Product>> hits = searchResponse.hits().hits();

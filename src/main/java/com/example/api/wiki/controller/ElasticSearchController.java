@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@RequestMapping("/product")
 public class ElasticSearchController {
 
     private final ElasticSearchQuery elasticSearchQuery;

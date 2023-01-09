@@ -1,17 +1,19 @@
 package com.example.api.wiki.controller;
 
+import com.example.api.wiki.entity.ConceptEntity;
+import com.example.api.wiki.repository.ConceptRepository;
 import com.example.api.wiki.service.ConceptService;
 import com.example.model.Concept;
 import com.example.model.Definition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/concept")
@@ -19,6 +21,7 @@ import reactor.core.publisher.Mono;
 public class ConceptController {
 
 	private final ConceptService conceptService;
+	private final ConceptRepository conceptRepository;
 
 	@GetMapping("/definition/{id}")
 	public Mono<Definition> getDefinitionById(@PathVariable int id) {
@@ -28,6 +31,20 @@ public class ConceptController {
 	@GetMapping("{id}")
 	public Mono<Concept> getConceptById(@PathVariable int id) {
 		return conceptService.getConceptById(id);
+	}
+
+	@GetMapping("/all")
+	public ResponseEntity<List<ConceptEntity>> getAllConcepts() {
+		try {
+			List<ConceptEntity> concepts = new ArrayList<>();
+			conceptRepository.findAll().forEach(concepts::add);
+			if (concepts.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			return new ResponseEntity<>(concepts, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@PostMapping("{sectionId}")
