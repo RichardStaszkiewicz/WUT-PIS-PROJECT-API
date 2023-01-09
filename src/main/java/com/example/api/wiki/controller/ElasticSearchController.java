@@ -18,21 +18,32 @@ public class ElasticSearchController {
         this.elasticSearchQuery = elasticSearchQuery;
     }
 
+    @PostMapping("/add_product_test/{id}/{name}/{desc}/{price}")
+    public ResponseEntity<Object> addProductTest(@PathVariable String id, @PathVariable String name, @PathVariable String desc, @PathVariable String price) throws IOException {
+        Product product = new Product();
+        product.setId(id);
+        product.setName(name);
+        product.setDescription(desc);
+        product.setPrice(Double.parseDouble(price));
+        String response = elasticSearchQuery.createOrUpdateDocument(product);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping("/create_or_update_document")
     public ResponseEntity<Object> createOrUpdateDocument(@RequestBody Product product) throws IOException {
         String response = elasticSearchQuery.createOrUpdateDocument(product);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/get_document")
-    public ResponseEntity<Object> getDocumentById(@RequestParam String productId) throws IOException {
-        Product product =  elasticSearchQuery.getDocumentById(productId);
+    @GetMapping("/get_document/{id}")
+    public ResponseEntity<Object> getDocumentById(@PathVariable String id) throws IOException {
+        Product product =  elasticSearchQuery.getDocumentById(id);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete_document")
-    public ResponseEntity<Object> deleteDocumentById(@RequestParam String productId) throws IOException {
-        String response =  elasticSearchQuery.deleteDocumentById(productId);
+    @DeleteMapping("/delete_document/{id}")
+    public ResponseEntity<Object> deleteDocumentById(@PathVariable String id) throws IOException {
+        String response =  elasticSearchQuery.deleteDocumentById(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
