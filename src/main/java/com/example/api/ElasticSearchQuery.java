@@ -23,20 +23,11 @@ public class ElasticSearchQuery {
     }
 
     public String createOrUpdateDocument(Product product) throws IOException {
-        /*
         IndexResponse response = elasticsearchClient.index(i -> i
                 .index(indexName)
                 .id(product.getId())
                 .document(product)
         );
-        */
-
-        IndexRequest.Builder<Product> indexReqBuilder = new IndexRequest.Builder<>();
-        indexReqBuilder.index(indexName);
-        indexReqBuilder.id(product.getId());
-        indexReqBuilder.document(product);
-
-        IndexResponse response = elasticsearchClient.index(indexReqBuilder.build());
 
         if(response.result().name().equals("Created")){
             return "Document has been successfully created.";
